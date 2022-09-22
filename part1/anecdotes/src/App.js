@@ -33,6 +33,7 @@ const App = () => {
       <div>
         <h1>Anecdote with most votes</h1>
         {anecdotes[points.indexOf(Math.max(...points))]} 
+        <p>has {Math.max(...points)} votes</p>
       </div>    
     </>
     
