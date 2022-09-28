@@ -1,5 +1,23 @@
 import { useState } from 'react'
 
+const Filter = ({search, handleSearchChange}) => (
+  <div>
+    filter shown with <input value={search} onChange={handleSearchChange} />
+  </div>
+)
+const PersonForm = ({newName,newNumber,handleSubmit, handleNameChange, handleNumberChange}) => (
+  <form onSubmit={handleSubmit}>
+    <div>name: <input value={newName} onChange={handleNameChange}/></div>
+    <div>number: <input value={newNumber} onChange={handleNumberChange}/></div>
+    <div><button type="submit">add</button></div>
+  </form>
+)
+const Persons = ({personsToShow}) => (
+  <ul>
+    {personsToShow.map(person => <li key={person.name}>{person.name} {person.number}</li>)}
+  </ul>
+)
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -39,20 +57,21 @@ const App = () => {
   const personsToShow = showAll
     ? persons
     : persons.filter(person => person.name.toUpperCase().includes(search.toUpperCase()))
-  return (
+  
+
+   return (
     <div>
       <h2>Phonebook</h2>
-      <div>filter shown with <input value={search} onChange={handleSearchChange} /></div>
-      <h2>add a new</h2>
-      <form onSubmit={handleSubmit}>
-        <div>name: <input value={newName} onChange={handleNameChange}/></div>
-        <div>number: <input value={newNumber} onChange={handleNumberChange}/></div>
-        <div><button type="submit">add</button></div>
-      </form>
-      <h2>Numbers</h2>
-      <ul>
-        {personsToShow.map(person => <li key={person.name}>{person.name} {person.number}</li>)}
-      </ul>
+      <Filter search={search} handleSearchChange={handleSearchChange} />
+      <h3>add a new</h3>
+      <PersonForm 
+        newName={newName} 
+        newNumber={newNumber} 
+        handleNameChange={handleNameChange} 
+        handleNumberChange={handleNumberChange}
+        handleSubmit={handleSubmit} />
+      <h3>Numbers</h3>
+      <Persons personsToShow={personsToShow} />
     </div>
   )
 }
