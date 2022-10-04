@@ -48,11 +48,23 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    if (persons.find(person => person.name === newName) ) {
-      alert(`${newName} is already added to phonebook`)
-      return
-    }
     const newPerson = {name: newName, number: newNumber}
+    if (persons.find(person => person.name === newName) ) {
+      const personToModify = persons.find(person => person.name === newName)
+      console.log(personToModify.id);
+      if(window.confirm(`${newName} is already added to phonebook`)) {
+        axios
+          .put(`http://localhost:3001/notes/${personToModify.id}`, {...personToModify, number: newNumber})
+          .then(response => {
+            personService
+            .getAll()
+            .then(initialPersons => {
+              setPersons(initialPersons)
+            })
+          })
+      }
+    }
+    
     
 
     personService
