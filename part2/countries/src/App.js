@@ -23,7 +23,7 @@ const App= () => {
         setCountries(response.data.filter(country => country.name.common.toLowerCase().includes(search.toLowerCase())))
       })
   })
-  // console.log(countries);
+  console.log(countries);
 
   const handleSearch = (event) => {
     setSearch(event.target.value)
@@ -34,9 +34,10 @@ const App= () => {
     <div>
       <div>find countries <input value={search} onChange={handleSearch} /></div>
       <div>
-        {countries.length > 10 
-          ? "To many matches, specify another filter."
-          : countries.map(country => <Country country={country} key={country.name.common} />)}
+        {countries.length > 10 ? "To many matches, specify another filter."
+          : countries.length === 1 ? countries.map(country => <Country country={country} key={country.name.common} />)
+          : countries.map(country => <div>{country.name.common} <button onClick={handleShow}>show</button></div>)  
+        }
       </div>
     </div>
   );

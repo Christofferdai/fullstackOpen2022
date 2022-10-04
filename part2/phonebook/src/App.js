@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-
+import personService from './services/persons'
 const Filter = ({search, handleSearchChange}) => (
   <div>
     filter shown with <input value={search} onChange={handleSearchChange} />
@@ -27,12 +27,12 @@ const App = () => {
   const [showAll, setShowAll] = useState(true)
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then(response => {
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
-  })
+  }, [])
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -53,9 +53,15 @@ const App = () => {
       return
     }
     const newPerson = {name: newName, number: newNumber}
-    setPersons(persons.concat(newPerson))
-    setNewName('')
-    setNewNumber('')
+    
+
+    personService
+      .create(newPerson)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+      })
   }
 
   const personsToShow = showAll
