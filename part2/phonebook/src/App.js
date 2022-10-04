@@ -13,9 +13,9 @@ const PersonForm = ({newName,newNumber,handleSubmit, handleNameChange, handleNum
     <div><button type="submit">add</button></div>
   </form>
 )
-const Persons = ({personsToShow}) => (
+const Persons = ({personsToShow, handleDelete}) => (
   <ul>
-    {personsToShow.map(person => <li key={person.name}>{person.name} {person.number}</li>)}
+    {personsToShow.map(person => <li key={person.name}>{person.name} {person.number} <button onClick={() => handleDelete(person.id)}>delete</button></li>)}
   </ul>
 )
 
@@ -63,6 +63,21 @@ const App = () => {
         setNewNumber('')
       })
   }
+  const handleDelete = id => {
+    if (window.confirm(`Delete ${persons[id-1].name}?`)) {
+      const copy = [...persons]
+      axios
+        .delete(`http://localhost:3001/persons/${id}`)
+        .then(response => {
+          personService
+            .getAll()
+            .then(initialPersons => {
+              setPersons(initialPersons)
+            })
+        })
+    }
+    
+  }
 
   const personsToShow = showAll
     ? persons
@@ -81,7 +96,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
         handleSubmit={handleSubmit} />
       <h3>Numbers</h3>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} handleDelete={handleDelete}/>
     </div>
   )
 }
