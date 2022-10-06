@@ -61,6 +61,10 @@ const App = () => {
             setPersons(persons.map(p => p.id !== personToModify.id ? p : response.data))
             
           })
+          .catch(error => {
+            setMessage(`Info of ${newName} has already been removed from the server, please refresh the webpage`)
+            setTimeout(() => setMessage(null), 3000)
+          })
       }
       setNewName('') 
       setNewNumber('')
@@ -90,6 +94,11 @@ const App = () => {
             .then(initialPersons => {
               setPersons(initialPersons)
             })
+        })
+        .catch(error => {
+          setMessage(`Info of ${persons[id-1].name} has already been removed from the server, please refresh the webpage`)
+          setTimeout(() => setMessage(null), 3000)
+          
         })
     }
     
