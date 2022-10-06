@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
+import Notification from './components/Notification'
+
 const Filter = ({search, handleSearchChange}) => (
   <div>
     filter shown with <input value={search} onChange={handleSearchChange} />
@@ -15,7 +17,7 @@ const PersonForm = ({newName,newNumber,handleSubmit, handleNameChange, handleNum
 )
 const Persons = ({personsToShow, handleDelete}) => (
   <ul>
-    {personsToShow.map(person => <li key={person.name}>{person.name} {person.number} <button onClick={() => handleDelete(person.id)}>delete</button></li>)}
+    {personsToShow.map(person => <li key={person.id}>{person.name} {person.number} <button onClick={() => handleDelete(person.id)}>delete</button></li>)}
   </ul>
 )
 
@@ -25,6 +27,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
   const [showAll, setShowAll] = useState(true)
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -51,26 +54,27 @@ const App = () => {
     const newPerson = {name: newName, number: newNumber}
     if (persons.find(person => person.name === newName) ) {
       const personToModify = persons.find(person => person.name === newName)
-      console.log(personToModify.id);
-      if(window.confirm(`${newName} is already added to phonebook`)) {
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         axios
-          .put(`http://localhost:3001/notes/${personToModify.id}`, {...personToModify, number: newNumber})
+          .put(`http://localhost:3001/persons/${personToModify.id}`, {...personToModify, number: newNumber})
           .then(response => {
-            personService
-            .getAll()
-            .then(initialPersons => {
-              setPersons(initialPersons)
-            })
+            setPersons(persons.map(p => p.id !== personToModify.id ? p : response.data))
+            
           })
       }
+      setNewName('') 
+      setNewNumber('')
+      setMessage(`Changed ${newPerson.name}'s number`)
+      setTimeout(() => setMessage(null), 3000)
+      return
     }
-    
-    
 
     personService
       .create(newPerson)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
+        setMessage(`Added ${newPerson.name}`)
+        setTimeout(() => setMessage(null), 3000)
         setNewName('')
         setNewNumber('')
       })
@@ -99,6 +103,7 @@ const App = () => {
    return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message}/>
       <Filter search={search} handleSearchChange={handleSearchChange} />
       <h3>add a new</h3>
       <PersonForm 
