@@ -1,4 +1,4 @@
-const dummy = (blogs) => (
+const dummy = () => (
   1
 )
 
@@ -7,8 +7,8 @@ const totalLikes = (blogs) => (
 )
 
 const favoriteBlog = (blogs) => {
-  maxLikeBlog = blogs[0]
-  blogs.forEach(blog => {
+  let maxLikeBlog = blogs[0]
+  blogs.forEach((blog) => {
     if (blog.likes >= maxLikeBlog.likes) {
       maxLikeBlog = blog
     }
@@ -19,6 +19,5 @@ const favoriteBlog = (blogs) => {
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlog
+  favoriteBlog,
 }
-
