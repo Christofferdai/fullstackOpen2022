@@ -49,6 +49,22 @@ test('a blog can be added', async () => {
   )
 })
 
+test('the defalut likes is 0 if missing', async () => {
+  const newBlog = {
+    title: 'Go To Statement Considered Harmful',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+  }
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+
+  const blogsAtEnd = await blogsInDb()
+  const likes = blogsAtEnd.map((n) => n.likes)
+  expect(likes[likes.length - 1]).toBe(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
