@@ -5,6 +5,12 @@ const Blog = require('../models/blog')
 const { initalBlogs, blogsInDb } = require('./test_helper')
 
 const api = supertest(app)
+const newBlog = {
+  title: 'Go To Statement Considered Harmful',
+  author: 'Edsger W. Dijkstra',
+  url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+  likes: 5,
+}
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -28,12 +34,6 @@ test('the unique identifier property is named id', async () => {
 })
 
 test('a blog can be added', async () => {
-  const newBlog = {
-    title: 'Go To Statement Considered Harmful',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-    likes: 5,
-  }
   await api
     .post('/api/blogs')
     .send(newBlog)
@@ -50,19 +50,32 @@ test('a blog can be added', async () => {
 })
 
 test('the defalut likes is 0 if missing', async () => {
-  const newBlog = {
-    title: 'Go To Statement Considered Harmful',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-  }
+  const { likes, ...blogWithoutLikes } = newBlog
   await api
     .post('/api/blogs')
-    .send(newBlog)
+    .send(blogWithoutLikes)
     .expect(201)
 
   const blogsAtEnd = await blogsInDb()
-  const likes = blogsAtEnd.map((n) => n.likes)
-  expect(likes[likes.length - 1]).toBe(0)
+  const likesList = blogsAtEnd.map((n) => n.likes)
+  expect(likesList[likesList.length - 1]).toBe(0)
+})
+
+test('response status 400 if request missing the title or url', async () => {
+  const { title, ...blogWithoutTitle } = newBlog
+  const { url, ...blogWithoutUrl } = newBlog
+  await api
+    .post('/api/blogs')
+    .send(blogWithoutTitle)
+    .expect(400)
+
+  await api
+    .post('/api/blogs')
+    .send(blogWithoutUrl)
+    .expect(400)
+
+  const blogsAtEnd = await blogsInDb()
+  expect(blogsAtEnd).toHaveLength(initalBlogs.length)
 })
 
 afterAll(() => {
