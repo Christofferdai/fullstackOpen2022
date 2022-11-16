@@ -78,6 +78,18 @@ test('response status 400 if request missing the title or url', async () => {
   expect(blogsAtEnd).toHaveLength(initalBlogs.length)
 })
 
+test('deletion of a blog', async () => {
+  const blogsAtStart = await blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+  const blogsAtEnd = await blogsInDb()
+  const titles = blogsAtEnd.map((blog) => blog.title)
+  expect(blogsAtEnd).toHaveLength(initalBlogs.length - 1)
+  expect(titles).not.toContain(blogToDelete.title)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
