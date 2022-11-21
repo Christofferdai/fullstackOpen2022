@@ -100,6 +100,18 @@ test('update of a blog', async () => {
   expect(titles).toContain(newBlog.title)
 })
 
+test('invalid can not be created', async () => {
+  const invalidUser = {
+    username: 'cccc',
+    password: 't',
+  }
+  const result = await api
+    .post('/api/users')
+    .send(invalidUser)
+    .expect(400)
+
+  expect(result.body.error).toContain('with least')
+})
 afterAll(() => {
   mongoose.connection.close()
 })
