@@ -5,13 +5,13 @@ const loginRouter = require('express').Router()
 const User = require('../models/user')
 
 loginRouter.post('/', async (request, response) => {
-  const { username, passwrod } = request.body
+  const { username, password } = request.body
 
   const user = await User.findOne({ username })
 
   const passwordCorrect = user === null
     ? false
-    : await bcrypt.compare(passwrod, user.passwordHash)
+    : await bcrypt.compare(password, user.passwordHash)
 
   if (!(user && passwordCorrect)) {
     return response.status(401).json({
@@ -26,7 +26,7 @@ loginRouter.post('/', async (request, response) => {
 
   const token = jwt.sign(userForToken, process.env.SECRET)
 
-  response
+  return response
     .status(200)
     .send({ token, username: user.username, name: user.name })
 })
