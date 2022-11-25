@@ -60,6 +60,10 @@ const initalBlogs = [
     __v: 0,
   },
 ]
+const initalUser = {
+  username: 'Chrisd',
+  password: 'test',
+}
 
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
@@ -67,5 +71,5 @@ const blogsInDb = async () => {
 }
 
 module.exports = {
-  listWithOneBlog, initalBlogs, blogsInDb,
+  listWithOneBlog, initalBlogs, initalUser, blogsInDb,
 }

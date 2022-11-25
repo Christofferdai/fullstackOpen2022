@@ -2,7 +2,8 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
-const { initalBlogs, blogsInDb } = require('./test_helper')
+const User = require('../models/user')
+const { initalBlogs, initalUser, blogsInDb } = require('./test_helper')
 
 const api = supertest(app)
 const newBlog = {
@@ -14,8 +15,10 @@ const newBlog = {
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
   const blogObjects = initalBlogs.map((note) => new Blog(note))
   const promiseArray = blogObjects.map((blog) => blog.save())
+  await api.post('/api/users').send(initalUser)
   await Promise.all(promiseArray)
 })
 
@@ -34,8 +37,11 @@ test('the unique identifier property is named id', async () => {
 })
 
 test('a blog can be added', async () => {
+  const response = await api.post('/api/login').send(initalUser)
+  console.log(response.body.token)
   await api
     .post('/api/blogs')
+    .set('Authorization', `bearer ${response.body.token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -47,6 +53,13 @@ test('a blog can be added', async () => {
   expect(titles).toContain(
     'Go To Statement Considered Harmful',
   )
+})
+
+test('response status 401 if request missing the token', async () => {
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(401)
 })
 
 test('the defalut likes is 0 if missing', async () => {
