@@ -70,6 +70,7 @@ const App = () => {
       setMessage(null)
     }, 3000)
   }
+  console.log(blogs)
   return (
     <div>
       <h1>Blogs</h1>
@@ -98,6 +99,7 @@ const App = () => {
       }
     </div>
 )
+
 }
 
 export default App
