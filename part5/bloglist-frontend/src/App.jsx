@@ -61,8 +61,8 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     blogObject.user = user
 
-    const retrunedblog = await blogService.create(blogObject)
-    setBlogs(blogs.concat(retrunedblog))
+    const returnedBlog = await blogService.create(blogObject)
+    setBlogs(blogs.concat(returnedBlog))
 
     setMessage(`a new blog: ${blogObject.title} by ${blogObject.author} added`)
     setClassName('info')
@@ -70,7 +70,11 @@ const App = () => {
       setMessage(null)
     }, 3000)
   }
-  console.log(blogs)
+
+  const handleLikes = async (updatedObject) => {
+    await blogService.update(updatedObject, updatedObject.id)
+    setBlogs(blogs.map(blog => blog.id === updatedObject.id ? {...blog, likes: blog.likes + 1} : blog))
+  }
   return (
     <div>
       <h1>Blogs</h1>
@@ -91,7 +95,7 @@ const App = () => {
       {blogs
         .filter((blog) => blog.user.username === user.username)
         .map((blog) => (
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} handleLikes={handleLikes}/>
         ))
       }    
       </>
