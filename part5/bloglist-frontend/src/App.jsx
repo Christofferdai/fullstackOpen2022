@@ -13,7 +13,7 @@ const App = () => {
   const [message, setMessage] = useState('')
   const [className, setClassName] = useState('')
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
+    blogService.getAll().then((blogs) => setBlogs(blogs.sort((a, b) => a.likes - b.likes)))
   }, [])
 
   useEffect(() => {
