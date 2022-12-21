@@ -75,6 +75,11 @@ const App = () => {
     await blogService.update(updatedObject, updatedObject.id)
     setBlogs(blogs.map(blog => blog.id === updatedObject.id ? {...blog, likes: blog.likes + 1} : blog))
   }
+
+  const handleRemove = async (id) => {
+    await blogService.remove(id)
+    setBlogs(blogs.filter(blog => blog.id !== id))
+  }
   return (
     <div>
       <h1>Blogs</h1>
@@ -95,7 +100,12 @@ const App = () => {
       {blogs
         .filter((blog) => blog.user.username === user.username)
         .map((blog) => (
-          <Blog key={blog.id} blog={blog} handleLikes={handleLikes}/>
+          <Blog 
+            key={blog.id}
+            blog={blog} 
+            handleLikes={handleLikes}
+            handleRemove={handleRemove}
+          />
         ))
       }    
       </>
