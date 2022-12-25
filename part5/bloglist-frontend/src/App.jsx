@@ -76,9 +76,9 @@ const App = () => {
     setBlogs(blogs.map(blog => blog.id === updatedObject.id ? {...blog, likes: blog.likes + 1} : blog))
   }
 
-  const handleRemove = async (id) => {
-    await blogService.remove(id)
-    setBlogs(blogs.filter(blog => blog.id !== id))
+  const handleRemove = async (blogToRemove) => {
+    await blogService.remove(blogToRemove)
+    setBlogs(blogs.filter(blog => blog.id !== blogToRemove.id))
   }
   return (
     <div>

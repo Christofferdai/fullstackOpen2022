@@ -9,6 +9,11 @@ const Blog = ({blog, handleLikes, handleRemove}) => {
     borderWidth: 1,
     marginBottom: 5
   }
+
+  const clickRemove = (blog) => {
+    window.confirm(`Remove blog ${blog.title}`)
+    handleRemove(blog)
+  }
   return (
     <div>
       <div style={blogStyle}>
@@ -22,7 +27,7 @@ const Blog = ({blog, handleLikes, handleRemove}) => {
         <button onClick={() => handleLikes({...blog, user: blog.user.id, likes: blog.likes + 1})}>like</button>
         <br />
         {blog.author}
-        <button onClick={() => handleRemove(blog.id)}>remove</button>
+        <button onClick={() => clickRemove(blog)}>remove</button>
       </div>
        
       
