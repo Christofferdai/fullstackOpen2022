@@ -24,7 +24,7 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-  
+
   const blogFormRef = useRef()
 
   const blogForm = () => (
@@ -34,7 +34,7 @@ const App = () => {
   )
 
   const handleLogin = async (userObject) => {
-    
+
     try {
       const user = await loginService.login(userObject)
 
@@ -49,7 +49,7 @@ const App = () => {
         setMessage(null)
       }, 3000)
     }
- 
+
   }
 
   const handleLogout = () => {
@@ -73,7 +73,7 @@ const App = () => {
 
   const handleLikes = async (updatedObject) => {
     await blogService.update(updatedObject, updatedObject.id)
-    setBlogs(blogs.map(blog => blog.id === updatedObject.id ? {...blog, likes: blog.likes + 1} : blog))
+    setBlogs(blogs.map(blog => blog.id === updatedObject.id ? { ...blog, likes: blog.likes + 1 } : blog))
   }
 
   const handleRemove = async (blogToRemove) => {
@@ -84,35 +84,35 @@ const App = () => {
     <div>
       <h1>Blogs</h1>
       <Notification message={message} className={className} />
-      {user === null ? 
+      {user === null ?
         <Togglable buttonLabel='log in'>
           <LoginForm handleLogin={handleLogin}/>
         </Togglable> :
-      <div>
-      <div>
-        <p>
-          {user.username} logged in
-          <button type='button' onClick={handleLogout}>log out</button>
-        </p>
-        {blogForm()}
-      </div>
-      <>
-      {blogs
-        .filter((blog) => blog.user.username === user.username)
-        .map((blog) => (
-          <Blog 
-            key={blog.id}
-            blog={blog} 
-            handleLikes={handleLikes}
-            handleRemove={handleRemove}
-          />
-        ))
-      }    
-      </>
-      </div>
+        <div>
+          <div>
+            <p>
+              {user.username} logged in
+              <button type='button' onClick={handleLogout}>log out</button>
+            </p>
+            {blogForm()}
+          </div>
+          <>
+            {blogs
+              .filter((blog) => blog.user.username === user.username)
+              .map((blog) => (
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  handleLikes={handleLikes}
+                  handleRemove={handleRemove}
+                />
+              ))
+            }
+          </>
+        </div>
       }
     </div>
-)
+  )
 
 }
 

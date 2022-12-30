@@ -1,5 +1,4 @@
 import axios from 'axios'
-import Blog from '../components/Blog'
 const baseUrl = '/api/blogs'
 
 let token = null
@@ -37,4 +36,4 @@ const remove =async (blog) => {
   return response.data
 }
 
-export default { getAll, setToken, create, update, remove,}
+export default { getAll, setToken, create, update, remove, }
