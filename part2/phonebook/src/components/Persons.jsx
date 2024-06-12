@@ -1,7 +1,8 @@
-const Persons = ({personsToShow}) => {
+import Person from "./Person"
+const Persons = ({personsToShow, deletePerson}) => {
   return (
     <ul>
-      {personsToShow.map((person) => <li key={person.name}>{person.name} {person.number}</li>)}
+      {personsToShow.map((person) => <Person key={person.id} name={person.name} number={person.number} onClick={() => deletePerson(person.id)}/>)}
     </ul>
   )
 }
