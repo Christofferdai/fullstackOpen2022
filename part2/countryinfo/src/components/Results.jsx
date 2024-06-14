@@ -1,26 +1,32 @@
+import { useState } from "react"
+import Detail from "./Detail"
+
+const CountryEntry = ({country}) => {
+  const [show, setShow] = useState(false)
+  return (
+    <div>
+      <p>{country.name.common} <button onClick={() => setShow(!show)}>{show ? 'hide' : 'show'}</button></p>
+      {show && <Detail country={country} />}
+    </div>
+  
+  )
+}
+
+
 const Results = ({ countries }) => {
+  
   if (countries.length > 10) {
     return <div>Too many matches, specify another filter</div>
   }
   if (countries.length === 1) { 
     const country = countries[0]
     return (
-      <div>
-        <h1>{country.name.common}</h1>
-        <p>capital {country.capital[0]}</p>
-        <p>area {country.area} km²</p>
-        <p>population {country.population}</p>
-        <h2>languages</h2>
-        <ul>
-          {Object.values(country.languages).map(lang => <li key={lang}>{lang}</li>)}
-        </ul>
-        <img src={country.flags.png} alt={country.name.common} style={{width: 150}}/>
-      </div>
+      <Detail country={country} />
     )
   }
   return (
     <div>
-      {countries.map(country => <div key={country.name.common}>{country.name.common}</div>)}
+      {countries.map(country => <CountryEntry key={country.name.common} country={country} />)}
     </div>
   )
 }
