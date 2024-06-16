@@ -1,8 +1,12 @@
-import express from 'express'
+import express, { response } from 'express'
 
 const app = express();
 
-const persons = [
+app.use(express.json())
+
+const generateId = () => Math.floor(Math.random() * 1000)
+
+let persons = [
   { 
     "id": 1,
     "name": "Arto Hellas", 
@@ -25,17 +29,60 @@ const persons = [
   }
 ]
 
-app.get('/', (req, res) => {
-  return res.send('<h1>PhoneBook</h1>')
+app.get('/info', (req, res) => {
+  return res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`)
 })
+
 
 app.get('/api/persons', (req, res) => {
   return res.json(persons)
 })
 
-app.get('/info', (req, res) => {
-  return res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`)
+app.get('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const person = persons.find(p => p.id === id)
+  if (person) {
+    res.json(person)
+  } else {
+    res.status(404).end()
+  }
 })
+
+app.delete('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  let person = persons.find(p => p.id === id)
+  if (person) {
+    persons = persons.filter(p => p.id !== id)
+    res.status(204).end()
+  } else {
+    res.status(404).end()
+  }
+})
+
+app.post('/api/persons', (req, res) => {
+  const body = req.body
+  if (!body.name) {
+    res.status(400).json({error: 'missing name'})
+  } else if (!body.number) {
+    res.status(400).json({error: 'missing number'})
+  } else if (persons.find(p => p.name === body.name)) {
+    res.status(400).json({error: 'name must be unique'})
+  } else {
+    const person = {
+      id: generateId(),
+      ...body
+    }
+    persons = persons.concat(person)
+  
+    res.status(201).json(person)
+  }
+  
+
+  
+  }
+)
+
+
 
 const PORT = 3001
 
