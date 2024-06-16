@@ -1,8 +1,16 @@
-import express, { response } from 'express'
+import express from 'express'
+import morgan from 'morgan';
 
 const app = express();
+morgan.token('body', function getBody (req) {
+  if (req.method === 'POST') {
+    return JSON.stringify(req.body)
+  }
+  
+})
 
 app.use(express.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 const generateId = () => Math.floor(Math.random() * 1000)
 
