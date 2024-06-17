@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import morgan from 'morgan';
 
 const app = express();
@@ -9,8 +10,10 @@ morgan.token('body', function getBody (req) {
   
 })
 
+app.use(cors())
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+app.use(express.static('dist'))
 
 const generateId = () => Math.floor(Math.random() * 1000)
 
