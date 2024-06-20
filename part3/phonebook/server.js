@@ -8,7 +8,7 @@ morgan.token('body', function getBody (req) {
   if (req.method === 'POST') {
     return JSON.stringify(req.body)
   }
-  
+
 })
 
 
@@ -21,24 +21,24 @@ app.use(express.static('dist'))
 // const generateId = () => Math.floor(Math.random() * 1000)
 
 // let persons = [
-//   { 
+//   {
 //     "id": 1,
-//     "name": "Arto Hellas", 
+//     "name": "Arto Hellas",
 //     "number": "040-123456"
 //   },
-//   { 
+//   {
 //     "id": 2,
-//     "name": "Ada Lovelace", 
+//     "name": "Ada Lovelace",
 //     "number": "39-44-5323523"
 //   },
-//   { 
+//   {
 //     "id": 3,
-//     "name": "Dan Abramov", 
+//     "name": "Dan Abramov",
 //     "number": "12-43-234345"
 //   },
-//   { 
+//   {
 //     "id": 4,
-//     "name": "Mary Poppendieck", 
+//     "name": "Mary Poppendieck",
 //     "number": "39-23-6423122"
 //   }
 // ]
@@ -46,11 +46,11 @@ app.use(express.static('dist'))
 
 
 app.get('/info', (req, res, next) => {
-  Person.find({}).then(persons => 
+  Person.find({}).then(persons =>
     res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`)
   )
   .catch(e => next(e))
-  
+
 })
 
 
@@ -58,7 +58,7 @@ app.get('/api/persons', (req, res, next) => {
   Person.find({}).then(
     persons => res.json(persons)
   ).catch(e => next(e))
-  
+
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
@@ -80,7 +80,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
       if (deletedPerson) {
         res.status(204).end()
       } else {
-        res.json({eror: 'delete failed'})
+        res.json({ eror: 'delete failed' })
       }
     }
   ).then(e => next(e))
@@ -89,23 +89,23 @@ app.delete('/api/persons/:id', (req, res, next) => {
 app.post('/api/persons', (req, res, next) => {
   const body = req.body
   if (!body.name) {
-    res.status(400).json({error: 'missing name'})
+    res.status(400).json({ error: 'missing name' })
   } else if (!body.number) {
-    res.status(400).json({error: 'missing number'})
+    res.status(400).json({ error: 'missing number' })
   } else {
-    Person.findOne({name:body.name}).then(samePerson =>{
+    Person.findOne({ name:body.name }).then(samePerson => {
       if (samePerson) {
         return res.status(400).json({
           error: 'name need to be unique'
         })
       } else {
-        const person = new Person({...body})
+        const person = new Person({ ...body })
         person.save().then(savedPerson => res.json(savedPerson)).catch(
           e => next(e)
         )
       }
     })
-  } 
+  }
   }
 )
 
@@ -117,7 +117,7 @@ app.put('/api/persons/:id', (req, res, next) => {
   }
   console.log('put id', req.params.id)
   console.log('put person', person)
-  Person.findByIdAndUpdate(req.params.id, person, {new: true})
+  Person.findByIdAndUpdate(req.params.id, person, { new: true })
     .then(updatedPerson => {
       res.json(updatedPerson)
     })
@@ -127,6 +127,8 @@ app.put('/api/persons/:id', (req, res, next) => {
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
+
+app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
