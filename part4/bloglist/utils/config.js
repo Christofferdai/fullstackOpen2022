@@ -1,11 +1,7 @@
-require('dotenv').config()
+import 'dotenv/config'
 
-const { PORT } = process.env
-const MONGODB_URI = process.env.NODE_ENV === 'test'
-  ? process.env.TEST_MONGODE_URI
-  : process.env.MONGODB_URI
+const PORT = process.env.PORT
 
-module.exports = {
-  MONGODB_URI,
-  PORT,
-}
+const MONGOOSEURL = process.env.MONGOOSEURL
+
+export default {PORT, MONGOOSEURL}
