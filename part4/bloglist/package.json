@@ -5,9 +5,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "pnpm nodemon index.js",
-    "test": "node --test"
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=developement pnpm nodemon index.js",
+    "test": "NODE_ENV=test node --test",
+    "lint": "pnpm eslint ."
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-async-errors": "^3.1.1",
     "mongoose": "^8.4.3"
   },
   "devDependencies": {
@@ -23,6 +25,7 @@
     "eslint": "^9.5.0",
     "globals": "^15.6.0",
     "lodash": "^4.17.21",
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
   }
 }
