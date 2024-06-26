@@ -70,9 +70,11 @@ test('blog without url or title will not be added', async () => {
     .post('/api/blogs')
     .send(newBlogWithoutUrl)
     .expect(400)
-
 })
 
+test('blog can be deleted from DB', async () => {
+  const
+})
 
 
 after(async () => mongoose.connection.close())

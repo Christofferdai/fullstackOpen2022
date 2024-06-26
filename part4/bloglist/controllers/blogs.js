@@ -19,7 +19,11 @@ blogsRouter.post('/', async (request, response) => {
   const result = await blog.save()
   console.log('return from post', result)
   response.status(201).json(result)
+})
 
+blogsRouter.delete('/api/blogs/:id', async (request, response) => {
+  await Blog.findByIdAndDelete(request.params.id)
+  response.status(204).end()
 })
 
 export default blogsRouter
