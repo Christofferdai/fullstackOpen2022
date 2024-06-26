@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import supertest from "supertest";
 import app from '../app.js'
 import User from '../models/user.js';
-import helper from './test_helper.js'
+
 
 const api = supertest(app)
 

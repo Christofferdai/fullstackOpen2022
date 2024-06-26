@@ -1,32 +1,44 @@
-import bcrypt from 'bcrypt'
-import express from 'express'
-import User from '../models/user.js'
+import bcrypt from "bcrypt";
+import express from "express";
+import User from "../models/user.js";
 
-const usersRouter = express.Router()
+const usersRouter = express.Router();
 
-usersRouter.get('/', async (request, response) => {
-  const users = await User.find({})
-  response.json(users)
-})
+usersRouter.get("/", async (request, response) => {
+  const users = await User.find({}).populate("blogs");
+  response.json(users);
+});
 
-usersRouter.post('/', async (request, response) => {
-  const { username, name, password } = request.body
+usersRouter.post("/", async (request, response) => {
+  const { username, name, password } = request.body;
   if (!(password && password.length > 2)) {
-    return response.status(400).json({error: "Password must be at least 3 characters"})
+    return response
+      .status(400)
+      .json({ error: "Password must be at least 3 characters" });
   }
 
-  const saltRounds = 10
-  const passwordHash = await bcrypt.hash(password, saltRounds)
+  const saltRounds = 10;
+  const passwordHash = await bcrypt.hash(password, saltRounds);
 
   const user = new User({
     username,
     name,
     passwordHash,
-  })
+  });
 
-  const savedUser = await user.save()
+  const savedUser = await user.save();
 
-  response.status(201).json(savedUser)
-})
+  response.status(201).json(savedUser);
+});
 
-export default usersRouter
+// delete a user
+usersRouter.delete("/:id", async (request, response, next) => {
+  try {
+    await User.findByIdAndDelete(request.params.id);
+    response.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+});
+
+export default usersRouter;
