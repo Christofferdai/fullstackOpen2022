@@ -33,16 +33,22 @@ blogsRouter.post("/", async (request, response) => {
 });
 
 // delete a blog
-blogsRouter.delete("/:id", async (request, response, next) => {
-  try {
-    const deletedBlog = await Blog.findByIdAndDelete(request.params.id);
-    if (!deletedBlog) {
-      return response.status(404).end();
-    }
-    response.status(204).end();
-  } catch (error) {
-    next(error);
+blogsRouter.delete("/:id", async (request, response) => {
+  if (!request.token) {
+    return response.status(401).json({ error: "need token" });
   }
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+  const blogToDelete = await Blog.findById(request.params.id);
+  if (decodedToken.id.toString() !== blogToDelete.user._id.toString()) {
+    return response.status(401).json({ error: "user is not the creater." });
+  }
+
+  const deletedBlog = await Blog.findByIdAndDelete(request.params.id);
+  if (!deletedBlog) {
+    return response.status(404).end();
+  }
+  response.status(204).end();
 });
 
 export { blogsRouter };
