@@ -41,4 +41,4 @@ usersRouter.delete("/:id", async (request, response, next) => {
   }
 });
 
-export default usersRouter;
+export { usersRouter };

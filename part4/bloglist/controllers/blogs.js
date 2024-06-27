@@ -36,4 +36,4 @@ blogsRouter.delete("/:id", async (request, response, next) => {
   }
 });
 
-export default blogsRouter;
+export { blogsRouter };
