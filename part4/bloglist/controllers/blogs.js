@@ -6,14 +6,6 @@ import User from "../models/user.js";
 
 const blogsRouter = express.Router();
 
-const getTokenFrom = (request) => {
-  const authorization = request.get("authorization");
-  if (authorization && authorization.startsWith("Bearer")) {
-    return authorization.replace("Bearer ", "");
-  }
-  return null;
-};
-
 blogsRouter.get("/", async (request, response) => {
   const blogs = await Blog.find({}).populate("user");
   response.json(blogs);
@@ -23,13 +15,8 @@ blogsRouter.post("/", async (request, response) => {
   if (!("url" in request.body) || !("title" in request.body)) {
     return response.status(400).end();
   }
-  try {
-    jwt.verify(getTokenFrom(request), process.env.SECRET);
-  } catch (error) {
-    console.log("decode error", error);
-  }
 
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
 
   console.log("decodedToken", decodedToken);
   if (!decodedToken.id) {
