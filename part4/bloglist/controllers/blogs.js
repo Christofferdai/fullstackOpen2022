@@ -1,5 +1,5 @@
 import express from "express";
-import jwt from "jsonwebtoken";
+
 import "express-async-errors";
 import Blog from "../models/blog.js";
 import User from "../models/user.js";
@@ -16,14 +16,11 @@ blogsRouter.post("/", async (request, response) => {
     return response.status(400).end();
   }
 
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-
-  console.log("decodedToken", decodedToken);
-  if (!decodedToken.id) {
+  if (!request.user) {
     return response.status(401).json({ error: "token invalid" });
   }
 
-  const user = await User.findById(decodedToken.id);
+  const user = await User.findById(request.user._id);
   const blog = new Blog({ ...request.body, user: user._id });
   blog.likes = blog.likes || 0;
   const savedBlog = await blog.save();
@@ -34,13 +31,12 @@ blogsRouter.post("/", async (request, response) => {
 
 // delete a blog
 blogsRouter.delete("/:id", async (request, response) => {
-  if (!request.token) {
-    return response.status(401).json({ error: "need token" });
+  if (!request.user) {
+    return response.status(401).json({ error: "token invalid" });
   }
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
 
   const blogToDelete = await Blog.findById(request.params.id);
-  if (decodedToken.id.toString() !== blogToDelete.user._id.toString()) {
+  if (request.user._id.toString() !== blogToDelete.user._id.toString()) {
     return response.status(401).json({ error: "user is not the creater." });
   }
 

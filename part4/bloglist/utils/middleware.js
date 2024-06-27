@@ -1,4 +1,6 @@
+import jwt from "jsonwebtoken";
 import logger from "./logger.js";
+import User from "../models/user.js";
 
 const requestLogger = (request, response, next) => {
   logger.info("Method:", request.method);
@@ -40,9 +42,19 @@ const tokenExtractor = (request, response, next) => {
   next();
 };
 
+const userExtractor = async (request, response, next) => {
+  const authorization = request.get("authorization");
+  const token = authorization.replace("Bearer ", "");
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  const user = await User.findById(decodedToken.id.toString());
+  user ? (request.user = user) : null;
+  next();
+};
+
 export default {
   requestLogger,
   unknownEndpoint,
   errorHandler,
   tokenExtractor,
+  userExtractor,
 };
