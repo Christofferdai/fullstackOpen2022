@@ -1,5 +1,4 @@
 import { useDispatch } from "react-redux";
-import apiServices from "../services/anecdotes";
 import { add } from "../reducers/anecdoteReducer";
 
 const AnecdoteForm = () => {
@@ -8,8 +7,8 @@ const AnecdoteForm = () => {
     event.preventDefault();
     const content = event.target.content.value;
     event.target.content.value = "";
-    const anecdote = await apiServices.createNew(content);
-    dispatch(add(anecdote));
+
+    dispatch(add(content));
   };
   return (
     <div>
