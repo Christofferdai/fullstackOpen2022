@@ -26,7 +26,7 @@ const Anecdote = ({ anecdote }) => (
     <h2>{anecdote.content}</h2>
     <p>{anecdote.author}</p>
     <a href={anecdote.info}>link</a>
-    <p>{anecdote.vote}</p>
+    <p>has {anecdote.votes} vote(s)</p>
   </div>
 );
 
