@@ -87,14 +87,21 @@ const CreateNew = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0,
     });
     navigate("/");
     props.setNotification(`added new anecdote ${content}`);
     setTimeout(() => props.setNotification(""), 5000);
+  };
+
+  const handleReset = (e) => {
+    e.preventDefault();
+    content.onReset();
+    author.onReset();
+    info.onReset();
   };
 
   return (
@@ -114,6 +121,7 @@ const CreateNew = (props) => {
           <input {...info} />
         </div>
         <button>create</button>
+        <button onClick={handleReset}>reset</button>
       </form>
     </div>
   );
